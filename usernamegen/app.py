@@ -1,10 +1,19 @@
-from flask import Flask, render_template, request, redirect, url_for
-from io import StringIO
+from flask import Flask, render_template, request
+import io
+import csv
 
 app = Flask(__name__)
 
-def generate_username(sequence_number):
-    return f"pkou{sequence_number:02d}"
+# def generate_username(prefix, index, padding):
+#     if len(str(index)) == 1:
+#         return f"{prefix}{index}"
+#     else:
+#         return f"{prefix}{index:02}"
+
+# def generate_username(prefix, sequence_number):
+#     return f"{sequence_number:02d}"
+def generate_username(prefix, sequence_number):
+    return f"{prefix}{sequence_number:02d}"
 
 def generate_password():
     return "Cloudera123"
@@ -12,48 +21,38 @@ def generate_password():
 def generate_workspace():
     return "pkoworkspace"
 
-def process_text_file(file):
-    lines = file.read().splitlines()
-    output = StringIO()
+def process_participants(input_data, username_prefix, start_index, end_index):
+    participant_names = input_data.strip().split('\n')
+    padding = len(str(end_index))
 
-    for index, line in enumerate(lines, start=1):
-        participant_name = line.strip()
-        username = generate_username(index)
+    output_rows = []
+    for index, name in enumerate(participant_names, start=start_index):
+        username = generate_username(username_prefix, index)
         password = generate_password()
         workspace = generate_workspace()
-        
-        output.write(f"<tr><td>{participant_name}</td><td>{username}</td><td>{password}</td><td>{workspace}</td></tr>")
 
-    return output.getvalue()
+        output_rows.append({
+            'Participant Name': name,
+            'Username': username,
+            'Password': password,
+            'Workspace Name': workspace
+        })
 
-@app.route("/", methods=["GET", "POST"])
+    return output_rows
+
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    if request.method == "POST":
-        file = request.files["file"]
-        if file.filename == "":
-            return redirect(request.url)
-        
-        processed_data = process_text_file(file)
-        
-        return f"""
-        <h3>Processed Data:</h3>
-        <table>
-            <thead>
-                <tr>
-                    <th>Participant Name</th>
-                    <th>Username</th>
-                    <th>Password</th>
-                    <th>Workspace Name</th>
-                </tr>
-            </thead>
-            <tbody>
-                {processed_data}
-            </tbody>
-        </table>
-        """
-    
-    return render_template("index.html")
+    if request.method == 'POST':
+        file = request.files['file']
+        username_prefix = request.form['username_prefix']
 
-if __name__ == "__main__":
+        if file and file.filename.endswith('.txt'):
+            input_data = file.read().decode('utf-8')
+            output_rows = process_participants(input_data, username_prefix, 1, 150)
+
+            return render_template('output.html', rows=output_rows, username_prefix=username_prefix)
+
+    return render_template('index.html')
+
+if __name__ == '__main__':
     app.run(debug=True)
-
