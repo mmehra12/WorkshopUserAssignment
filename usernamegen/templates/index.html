@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload File</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #F8E7D9; /* Light orange background */
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #FFFFFF; /* White background */
+            border-radius: 10px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1); /* Shadow effect */
+        }
+        h1 {
+            color: #FFA500; /* Orange text */
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #CCCCCC; /* Light grey border */
+        }
+        th {
+            background-color: #FFA500; /* Orange background for table header */
+            color: #FFFFFF; /* White text for table header */
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Upload a Text File</h1>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="file" accept=".txt">
+            <button type="submit">Upload</button>
+        </form>
+
+        {% if processed_data %}
+        <h2>Processed Data:</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Participant Name</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>Workspace Name</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in processed_data %}
+                <tr>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                    <td>{{ row[2] }}</td>
+                    <td>{{ row[3] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% endif %}
+    </div>
+</body>
+</html>
+
