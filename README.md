@@ -14,13 +14,13 @@ Run the app.py using
 
 Open the URL http://127.0.0.1:5000 on a browser and upload the txt file with all the user names.
 
-SAMPLE INPUT FILE
+## SAMPLE INPUT FILE
 ![Alt text](./assets/input.png)
 
-HOMEPAGE
+## HOMEPAGE
 ![Alt text](./assets/homepage.png)
 
-OUTPUT
+## OUTPUT
 ![Alt text](./assets/output.png)
 
 
